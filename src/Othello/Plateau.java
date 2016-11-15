@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
@@ -33,6 +35,7 @@ public class Plateau {
 
 
     public static Jeu partie = new Jeu();
+    public static JComboBox<String> listeMode = new JComboBox<String>();
     public static JLabel scoreMachine = new JLabel("");
     public static JLabel scoreHumain = new JLabel("");
     private JFrame frame;
@@ -62,7 +65,6 @@ public class Plateau {
      */
     public Plateau() {
         initialize();
-        Jeu.CoupsPossibles(partie);
     }
 
 
@@ -80,8 +82,41 @@ public class Plateau {
 
         JPanel panelHaut = new JPanel();
         frame.getContentPane().add(panelHaut, BorderLayout.NORTH);
-        panelHaut.setLayout(new GridLayout(1,9));
+        panelHaut.setLayout(new GridLayout(2,0));
 
+        JPanel panelChoixIA = new JPanel();
+        panelChoixIA.setLayout(new GridLayout(1,9));
+        panelHaut.add(panelChoixIA);
+
+        JPanel panelScores = new JPanel();
+        panelScores.setLayout(new GridLayout(1,9));
+        panelHaut.add(panelScores);
+
+        JLabel choixIA = new JLabel("Choix du niveau de l'IA");
+        choixIA.setHorizontalAlignment(SwingConstants.CENTER);
+        choixIA.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        panelChoixIA.add(choixIA);
+
+        JComboBox test = new JComboBox();
+        test.addItem("Niveau 1");
+        test.addItem("Niveau 2");
+        test.addItem("Niveau 3");
+        listeMode = test;
+        panelChoixIA.add(listeMode);
+
+        JButton lancerPartie = new JButton("Go");
+        lancerPartie.setHorizontalAlignment(SwingConstants.CENTER);
+        lancerPartie.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        lancerPartie.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                partie.Go(partie);
+            }
+        });
+        panelChoixIA.add(lancerPartie);
+
+        //je récupère le choix de l'IA comme ça
+        //test.setText(listeMode.getSelectedItem().toString());
 
         JPanel panelBas = new JPanel();
         frame.getContentPane().add(panelBas, BorderLayout.SOUTH);
@@ -123,8 +158,7 @@ public class Plateau {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
-                Jeu.MAJCouleur(partie);
-                Jeu.CoupsPossibles(partie);
+
             }
         });
         panelBas.add(restart);
@@ -132,13 +166,13 @@ public class Plateau {
         scoreHumain.setText("Score joueur :" + partie.joueurH.score);
         scoreHumain.setHorizontalAlignment(SwingConstants.CENTER);
         scoreHumain.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        panelHaut.add(scoreHumain);
+        panelScores.add(scoreHumain);
 
 
         scoreMachine.setText("Score machine :" + partie.joueurOrdi.score);
         scoreMachine.setHorizontalAlignment(SwingConstants.CENTER);
         scoreMachine.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        panelHaut.add(scoreMachine);
+        panelScores.add(scoreMachine);
 
         panelBas.setBorder(null);
         panelHaut.setBorder(null);
@@ -243,9 +277,10 @@ public class Plateau {
                             public void mouseClicked(MouseEvent e) {
 
                                 try {
-                                    partie.TraitementDuTour(newButton);
-                                    Jeu.MAJCouleur(partie);
-                                    Jeu.CoupsPossibles(partie);
+                                    if(partie.joueurCourant==partie.joueurH && partie.modeJeu!=""){
+                                        partie.TraitementDuTourJoueur(newButton);
+
+                                    }
                                 } catch (Exception e1) {
                                     // TODO Auto-generated catch block
                                     e1.printStackTrace();
