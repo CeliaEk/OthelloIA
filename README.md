@@ -19,4 +19,6 @@ You can use Eclipse or intelliJ to launch the project.
 You can play against the AI, and choose which algorithm the AI should use, or you can make AI play against each other.
 
 
+# Contribution : 
 
+https://github.com/Sylv-ctr
